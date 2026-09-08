@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormatPure | Free AI Text & Prompt Cleaner</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            max-width: 600px;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .ad-space {
+            width: 100%;
+            max-width: 600px;
+            background: #111827;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            min-height: 90px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            padding: 12px;
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+            margin-bottom: 15px;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .stats span b {
+            color: var(--text-main);
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background-color: #334155;
+            color: var(--text-main);
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #475569;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            grid-column: span 2;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>FormatPure</h1>
+        <p>Remove AI markdown symbols, fix weird spacing, and clean up messy copied text instantly.</p>
+    </header>
+
+    <!-- TOP AD PLACEHOLDER -->
+    <div class="ad-space">
+        <!-- Paste your Adsterra Banner Code Here Later -->
+        <span>Advertisement Place</span>
+    </div>
+
+    <div class="main-container">
+        <textarea id="textInput" placeholder="Paste your messy AI or web text here..." oninput="updateStats()"></textarea>
+        
+        <div class="stats">
+            <span>Words: <b id="wordCount">0</b></span>
+            <span>Characters: <b id="charCount">0</b></span>
+        </div>
+
+        <div class="button-grid">
+            <button class="btn-primary" onclick="cleanText()">✨ Clean AI Formatting</button>
+            <button onclick="removeSpaces()">Fix Extra Spaces</button>
+            <button onclick="allUpperCase()">UPPERCASE</button>
+            <button onclick="allLowerCase()">lowercase</button>
+            <button onclick="clearText()" style="background-color: #991b1b;">Clear</button>
+       <button onclick="reverseText()">reverseText</button>
+        <button onclick ="toSentenceCase()">Sentence Case</button>
+          <button onclick = "toTitleCase()">Title Case</button>
+        
+        </div>
+                 <!-- FIND AND REPLACE SECTION -->
+        <div style= "display: flex; flex-wrap:wrap; gap:10px; margin-bottom:15px ;margin-top:10px">
+            <input type="text" id="findInput" placeholder="Find word..." 
+                   style="flex: 1; background-color: var(--bg-color); border: 1px solid var(--border); border-radius: 6px; color: var(--text-main); padding: 10px; font-size: 0.9rem; outline: none;">
+            <input type="text" id="replaceInput" placeholder="Replace with..." 
+                   style="flex: 1; background-color: var(--bg-color); border: 1px solid var(--border); border-radius: 6px; color: var(--text-main); padding: 10px; font-size: 0.9rem; outline: none;">
+        </div>
+        <button onclick="findAndReplace()" style="width: 50%; background-color: #3b82f6; margin-bottom: 15px;">🔄 Swap Words Instantly</button>
+
+      
+      <!-- PASSWORD GENERATOR CONTAINER -->
+    <div class="main-container" style="margin-top: 20px;">
+        <h2 style="font-size: 1.3rem; margin-bottom: 10px; color: var(--text-main);">🔐 Secure Password Generator</h2>
+        
+        <!-- Display Box -->
+        <input type="text" id="passwordOutput" readonly placeholder="Your secure password will appear here..." 
+               style="width: 100%; background-color: var(--bg-color); border: 1px solid var(--border); border-radius: 8px; color: #34d399; padding: 12px; font-size: 1.1rem; outline: none; margin-bottom: 15px; font-family: monospace; text-align: center; font-weight: bold;">
+        
+        <div class="button-grid" style="grid-template-columns: 1fr;">
+            <button class="btn-primary" onclick="generatePassword()">⚡ Generate Strong Password</button>
+            <button onclick="copyPassword()" style="background-color: #059669; margin-top: 5px;">📋 Copy Password</button>
+        </div>
+    </div>
+
+
+        <button onclick="copyToClipboard()" style="width: 100%; background-color: #059669;">📋 Copy Clean Text</button>
+    </div>
+
+    <!-- BOTTOM AD PLACEHOLDER -->
+    <div class="ad-space">
+        <!-- Paste another Adsterra Banner Code Here Later -->
+        <span>Advertisement Place</span>
+    </div>
+      <!-- CONVERTER & MILESTONE TOOL CONTAINER -->
+    <div class="main-container" style="margin-top: 20px;">
+        <h2 style="font-size: 1.3rem; margin-bottom: 15px; color: var(--text-main);">📊 Quick Converter & Milestones</h2>
+        
+        <!-- Tab 1: Millimeters to Inches -->
+                <!-- Tab 1: Millimeters to Inches (Perfect Mobile Version) -->
+        <div style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px;">
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">📏 MM to Inches Converter</p>
+            
+            <!-- This CSS Grid automatically wraps items vertically if they run out of phone screen room -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; width: 100%;">
+                <input type="number" id="mmInput" placeholder="Enter mm..." oninput="convertMmToInches()"
+                       style="width: 100%; background-color: var(--bg-color); border: 1px solid var(--border); border-radius: 6px; color: var(--text-main); padding: 12px; font-size: 0.95rem; outline: none;">
+                <input type="text" id="inchesOutput" readonly placeholder="Result in inches..." 
+                       style="width: 100%; background-color: var(--bg-color); border: 1px solid var(--border); border-radius: 6px; color: #34d399; padding: 12px; font-size: 0.95rem; outline: none; font-weight: bold;">
+            </div>
+        </div>
+
+
+        <!-- Tab 2: Freelance Milestone Calculator -->
+        <div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">💼 Freelance Budget Splitter (25% / 50% / 25%)</p>
+            <input type="number" id="totalBudget" placeholder="Enter total project budget (e.g., $ or Rs)..." oninput="calculateMilestones()"
+                   style="width: 100%; background-color: var(--bg-color); border: 1px solid var(--border); border-radius: 6px; color: var(--text-main); padding: 12px; font-size: 0.95rem; outline: none; margin-bottom: 12px;">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; text-align: center; font-size: 0.85rem;">
+                <div style="background: var(--bg-color); padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
+                    <span style="color: var(--text-muted);">Deposit (25%)</span>
+                    <div id="m1" style="font-weight: bold; color: #3b82f6; margin-top: 5px;">0</div>
+                </div>
+                <div style="background: var(--bg-color); padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
+                    <span style="color: var(--text-muted);">Midway (50%)</span>
+                    <div id="m2" style="font-weight: bold; color: #a855f7; margin-top: 5px;">0</div>
+                </div>
+                <div style="background: var(--bg-color); padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
+                    <span style="color: var(--text-muted);">Final (25%)</span>
+                    <div id="m3" style="font-weight: bold; color: #10b981; margin-top: 5px;">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  
+
+    <footer>
+         <!-- BOTTOM STRUCTURAL FOOTER BOUNDARY -->
+   <div style="margin-top: 30px; width: 100%; max-width: 600px; text-align: left;">
+        
+        <!-- INSIDE FOOTER: ABOUT & COMPLAINT BOX CONTAINER -->
+        <div class="main-container" style="width: 100%; margin-bottom: 20px;">
+            <h2 style="font-size: 1.3rem; margin-bottom: 10px; color: var(--text-main);">ℹ️ About Our Tools</h2>
+            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">
+                We build simple, fast, and completely free web utilities to help global students, developers, and writers save time. Our tools process everything locally on your device, ensuring maximum security and absolute privacy.
+            </p>
+
+            <h2 style="font-size: 1.3rem; margin-bottom: 12px; color: var(--text-main);">📨 File a Complaint / Contact Us</h2>
+            
+            <!-- Free Email Router Form -->
+            <form action="https://web3forms.com" method="POST" style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+                <input type="hidden" name="subject" value="New Website Complaint/Feedback">
+
+                <input type="email" name="email" required placeholder="Your Email Address..." 
+                       style="width: 100%; background-color: var(--bg-color); border: 1px solid var(--border); border-radius: 6px; color: var(--text-main); padding: 12px; font-size: 0.95rem; outline: none;">
+                
+                <textarea name="message" required placeholder="Type your complaint or suggestion here..." 
+                          style="width: 100%; height: 100px; background-color: var(--bg-color); border: 1px solid var(--border); border-radius: 6px; color: var(--text-main); padding: 12px; font-size: 0.95rem; outline: none; resize: none; margin-bottom: 5px;"></textarea>
+                
+                <button type="submit" style="width: 100%; background-color: #dc2626; color: white; padding: 12px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer;">Submit Complaint</button>
+            </form>
+        </div>
+
+        <!-- COPYRIGHT INFORMATION NOTICE -->
+        <p style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">
+            &copy; 2026 FormatPure. Built securely for global students and professionals.
+        </p>
+    </footer>
+
+    
+      
+
+   
+      <footer>
+      <p>&copy; 2026 FormatPure. Built securely for global students and professionals.</p>
+    </footer>
+
+    <script>
+        const txtArea = document.getElementById('textInput');
+
+        function updateStats() {
+            const text = txtArea.value;
+            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+            document.getElementById('wordCount').innerText = words;
+            document.getElementById('charCount').innerText = text.length;
+        }
+
+        function cleanText() {
+            let text = txtArea.value;
+            // Removes markdown asterisks (** bold), hashtags (# titles), and backticks
+            text = text.replace(/[\*\#\`]/g, '');
+            // Fixes bullet point artifacts
+            text = text.replace(/^[\-\+\*]\s+/gm, '• ');
+            txtArea.value = text.trim();
+            updateStats();
+        }
+
+        function removeSpaces() {
+            let text = txtArea.value;
+            // Collapses double spaces and double line breaks
+            text = text.replace(/[ ]+/g, ' ');
+            text = text.replace(/\n\s*\n/g, '\n\n');
+            txtArea.value = text.trim();
+            updateStats();
+        }
+    
+      
+
+      
+        function allUpperCase() {
+            txtArea.value = txtArea.value.toUpperCase();
+        }
+
+        function allLowerCase() {
+            txtArea.value = txtArea.value.toLowerCase();
+        }
+
+        function clearText() {
+            txtArea.value = '';
+            updateStats();
+        }
+
+        function copyToClipboard() {
+            if(txtArea.value === "") return;
+            txtArea.select();
+            txtArea.setSelectionRange(0, 99999); // For mobile devices
+            navigator.clipboard.writeText(txtArea.value);
+            alert("Copied to clipboard!");
+        }
+      
+    function reverseText() {
+      let currentText = txtArea.value;
+      let backwardText=currentText.split("").reverse().join("");
+      txtArea.value = backwardText;
+    }
+            function generatePassword() {
+            // The characters the generator will pick from
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+~}{[]:;?><";
+            let password = "";
+            
+            // Loop 12 times to make a strong 12-character password
+            for (let i = 0; i < 12; i++) {
+                let randomIndex = Math.floor(Math.random() * chars.length);
+                password += chars[randomIndex];
+            }
+            
+            // Put the generated password into the output box
+            document.getElementById("passwordOutput").value = password;
+        }
+
+        function copyPassword() {
+            const passBox = document.getElementById("passwordOutput");
+            if (passBox.value === "") return;
+            
+            passBox.select();
+            passBox.setSelectionRange(0, 99999); // For mobile devices
+            navigator.clipboard.writeText(passBox.value);
+            alert("Password copied to clipboard!");
+        }
+        function findAndReplace() {
+            let text = txtArea.value;
+            const findText = document.getElementById('findInput').value;
+            const replaceText = document.getElementById('replaceInput').value;
+
+            if (findText === "") {
+                alert("Please enter a word to find first!");
+                return;
+            }
+
+            // Using a Regular Expression with 'g' to replace ALL matching instances globally
+            // This escapes any special characters the user types in the search box
+            const escapedFind = findText.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+            const regex = new RegExp(escapedFind, 'gi');
+            
+            txtArea.value = text.replace(regex, replaceText);
+            updateStats(); // Refresh word count automatically
+        }
+        function toSentenceCase() {
+            let text = txtArea.value.toLowerCase();
+            let sentences = text.split(/([.!?]\s+)/);
+            for (let i = 0; i < sentences.length; i++) {
+                if (sentences[i].length > 0 && !sentences[i].match(/[.!?]\s+/)) {
+                    sentences[i] = sentences[i].charAt(0).toUpperCase() + sentences[i].slice(1);
+                }
+            }
+            txtArea.value = sentences.join('');
+            updateStats();
+        }
+
+        function toTitleCase() {
+            let text = txtArea.value.toLowerCase();
+            let words = text.split(' ');
+            for (let i = 0; i < words.length; i++) {
+                if (words[i].length > 0) {
+                    words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+                }
+            }
+            txtArea.value = words.join(' ');
+            updateStats();
+        }
+
+           
+
+            function convertMmToInches() {
+            let mm = parseFloat(document.getElementById('mmInput').value);
+            if (isNaN(mm)) {
+                document.getElementById('inchesOutput').value = "";
+                return;
+            }
+            // 1 mm is exactly 0.0393701 inches. Fixed to 4 decimal places for accuracy.
+            let inches = mm * 0.0393701;
+            document.getElementById('inchesOutput').value = inches.toFixed(4) + " in";
+        }
+
+        function calculateMilestones() {
+            let total = parseFloat(document.getElementById('totalBudget').value);
+            if (isNaN(total)) {
+                document.getElementById('m1').innerText = "0";
+                document.getElementById('m2').innerText = "0";
+                document.getElementById('m3').innerText = "0";
+                return;
+            }
+            // Splitting standard freelance safely: 25% upfront, 50% midpoint work, 25% delivery
+            document.getElementById('m1').innerText = (total * 0.25).toFixed(2);
+            document.getElementById('m2').innerText = (total * 0.50).toFixed(2);
+            document.getElementById('m3').innerText = (total * 0.25).toFixed(2);
+        }
+
+    
+    
+    </script>
+  
+  
+  
+</body>
+</html>
