@@ -590,10 +590,27 @@ function downloadFile(data, filename, type) {
   a.download = filename;
   a.click();
 }
-</script>
+// ========== YOUR OLD TOOL FUNCTIONS ==========
+function convertMM() {
+  let mm = document.getElementById('mmInput').value;
+  if(mm) document.getElementById('inchResult').value = (mm / 25.4).toFixed(2);
+}
+
+function splitBudget() {
+  let total = document.getElementById('budgetInput').value;
+  if(total) {
+    document.getElementById('deposit').innerText = (total * 0.25).toFixed(0);
+    document.getElementById('midway').innerText = (total * 0.50).toFixed(0);
+    document.getElementById('final').innerText = (total * 0.25).toFixed(0);
+  }
+}
+// ========== END OLD FUNCTIONS ==========
+    
+    </script>
+    
     
 
-</script>
+
 
   
 </body>
