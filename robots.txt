@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://formatpure.github.io/formatpure/sitemap.xml
