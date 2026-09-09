@@ -169,39 +169,30 @@
         <h1>FormatPure</h1>
         <p>Remove AI markdown symbols, fix weird spacing, and clean up messy copied text instantly.</p>
     </header>
-
-<!-- VOICE CLONE SECTION START -->
-<div style="border:3px solid #fbbf24; padding:25px; border-radius:15px; background:linear-gradient(135deg,#fffbeb,#fef3c7); margin:20px 0; text-align:center; box-shadow:0 0 25px #fbbf24;">
-  <h3 style="margin:0 0 10px 0; color:#92400e;">🎙️ FEATURED: AI Voice Clone - UNLIMITED & FREE</h3>
-  <p style="margin:0 0 15px 0; color:#92400e;"><b>Record 60 seconds</b> → Clean English Clone → Download</p>
-  <p style="margin:0 0 15px 0; font-size:14px;">Make 10 clips = 10 minute YouTube video. No login. No cost.</p>
-  <button id="vc-start" style="background:#f59e0b; color:#fff; padding:14px 24px; border:none; border-radius:10px; font-weight:bold; font-size:16px; cursor:pointer;">● Start Recording 60s</button>
-  <p id="vc-status" style="margin-top:15px; font-size:13px; color:#92400e;">⚠️ Don't refresh or close tab until download finishes. Runs on your phone.</p>
-  <audio id="vc-audio" controls style="display:none; margin-top:15px; width:100%;"></audio>
-  <a id="vc-download" style="display:none; margin-top:10px; background:#10b981; color:#fff; padding:12px 20px; border-radius:8px; text-decoration:none; font-weight:bold;" download="voice-clone-60s.wav">⬇️ Download Clone</a>
+<!-- ========== NEW: AI VOICEOVER TOOL ========== -->
+<div class="box" style="border: 2px solid #00ff88;">
+  <h3 style="color: #00ff88; text-align:center;">🎙️ Box 1: AI YouTube Voiceover Generator</h3>
+  <textarea id="script" placeholder="Paste your YouTube script here to generate AI Voiceover + SRT..."></textarea>
 </div>
-<script>
-let vcChunks=[], vcRec, vcTimer;
-document.getElementById('vc-start').onclick=async()=>{
-  vcChunks=[];
-  let s=await navigator.mediaDevices.getUserMedia({audio:true});
-  vcRec=new MediaRecorder(s);
-  vcRec.ondataavailable=e=>vcChunks.push(e.data);
-  vcRec.onstop=()=>{
-    let b=new Blob(vcChunks,{type:'audio/wav'});
-    let u=URL.createObjectURL(b);
-    document.getElementById('vc-audio').src=u;
-    document.getElementById('vc-audio').style.display='block';
-    document.getElementById('vc-download').href=u;
-    document.getElementById('vc-download').style.display='inline-block';
-    document.getElementById('vc-status').innerHTML='✅ Done! Download your 60s clip above.';
-  };
-  vcRec.start();
-  document.getElementById('vc-status').innerHTML='🔴 Recording... 60 seconds';
-  setTimeout(()=>{vcRec.stop();s.getTracks().forEach(t=>t.stop());},60000);
-};
-</script>
-<!-- VOICE CLONE SECTION END -->
+
+<div class="box" style="border: 2px solid #00ff88;">
+  <h3 style="color: #00ff88; text-align:center;">Box 2: Choose AI Voice</h3>
+  <select id="voiceSelect"><option>Loading voices...</option></select>
+  <button onclick="testVoice()">🔊 Test Selected Voice</button>
+</div>
+
+<div class="box" style="border: 2px solid #00ff88;">
+  <h3 style="color: #00ff88; text-align:center;">Box 3: Generate & Download</h3>
+  <button onclick="generateVoiceover()">🚀 Generate Voiceover + Subtitles</button>
+  <button class="btn-download" onclick="downloadAudio()">🎵 Download MP3 Audio</button>
+  <button class="btn-download" onclick="downloadSRT()">📄 Download SRT Subtitles</button>
+  <p id="status" style="text-align:center; color:#00ff88; font-weight:bold;">Ready to generate</p>
+</div>
+
+<hr style="margin: 30px 0; border: 1px dashed #334155;">
+<h2 style="text-align:center; color:#00ff88;">↓ OR USE TEXT CLEANER TOOLS BELOW ↓</h2>
+<!-- ========== END NEW TOOL ========== -->
+
 
 <!-- TOP AD PLACEHOLDER -->
 
@@ -516,7 +507,90 @@ document.getElementById('vc-start').onclick=async()=>{
             document.getElementById('m2').innerText = (total * 0.50).toFixed(2);
             document.getElementById('m3').innerText = (total * 0.25).toFixed(2);
         }
+<script>
+let voices = [];
+let audioBlob = null;
+let scriptText = "";
+let sentences = [];
 
+function loadVoices() {
+  voices = speechSynthesis.getVoices();
+  const select = document.getElementById('voiceSelect');
+  if(!select) return;
+  select.innerHTML = '';
+  voices.forEach((voice, i) => {
+    if(voice.lang.includes('en') || voice.lang.includes('ur') || voice.lang.includes('hi')) {
+      let option = document.createElement('option');
+      option.value = i;
+      option.textContent = `${voice.name} - ${voice.lang}`;
+      select.appendChild(option);
+    }
+  });
+}
+loadVoices();
+speechSynthesis.onvoiceschanged = loadVoices;
+
+function testVoice() {
+  if(!document.getElementById('voiceSelect').value) return;
+  const utter = new SpeechSynthesisUtterance("Hello, this is your AI voiceover test from FormatPure");
+  utter.voice = voices[document.getElementById('voiceSelect').value];
+  speechSynthesis.speak(utter);
+}
+
+function generateVoiceover() {
+  scriptText = document.getElementById('script').value.trim();
+  if(!scriptText) { alert("Please paste your script first"); return; }
+  document.getElementById('status').innerText = "⏳ Generating... Do not close page";
+  speechSynthesis.cancel();
+  sentences = scriptText.match(/[^.!?]+[.!?]+/g) || [scriptText];
+  const utter = new SpeechSynthesisUtterance(scriptText);
+  utter.voice = voices[document.getElementById('voiceSelect').value];
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const dest = audioContext.createMediaStreamDestination();
+  const recorder = new MediaRecorder(dest.stream);
+  let chunks = [];
+  recorder.ondataavailable = e => chunks.push(e.data);
+  recorder.onstop = () => {
+    audioBlob = new Blob(chunks, {type: 'audio/mp3'});
+    document.getElementById('status').innerText = "✅ Done! Download MP3 + SRT below";
+  };
+  recorder.start();
+  speechSynthesis.speak(utter);
+  utter.onend = () => { setTimeout(() => recorder.stop(), 500); };
+}
+
+function downloadSRT() {
+  if(!sentences.length) { alert("Generate voiceover first"); return; }
+  let srt = ""; let time = 0;
+  sentences.forEach((s, i) => {
+    let duration = s.split(' ').length * 0.4;
+    let start = formatTime(time);
+    let end = formatTime(time + duration);
+    srt += `${i+1}\n${start} --> ${end}\n${s.trim()}\n\n`;
+    time += duration;
+  });
+  downloadFile(srt, 'FormatPure_Subtitles.srt', 'text/plain');
+}
+
+function downloadAudio() {
+  if(!audioBlob) { alert("Generate voiceover first"); return; }
+  const url = URL.createObjectURL(audioBlob);
+  downloadFile(url, 'FormatPure_Voiceover.mp3', 'audio/mp3');
+}
+
+function formatTime(sec) {
+  let h = Math.floor(sec/3600);
+  let m = Math.floor((sec%3600)/60);
+  let s = (sec%60).toFixed(3);
+  return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.padStart(6,'0')}`.replace('.',',');
+}
+function downloadFile(data, filename, type) {
+  const a = document.createElement('a');
+  if(type === 'audio/mp3') a.href = data; else a.href = URL.createObjectURL(new Blob([data], {type}));
+  a.download = filename;
+  a.click();
+}
+</script>
     
 
 </script>
