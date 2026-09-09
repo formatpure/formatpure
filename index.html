@@ -290,6 +290,95 @@
                 <input type="hidden" name="access_key" value="330e6e57-8971-4533-9831-bd80102f3f0e">
                 <input type="hidden" name="subject" value="New Website Complaint/Feedback">
 
+<div style="border:2px solid #9333ea; padding:20px; border-radius:12px; background:#faf5ff; margin:30px 0; text-align:center; font-family:sans-serif;">
+  <h3 style="margin:0 0 10px 0;">🎙️ AI Voice Clone - UNLIMITED & FREE</h3>
+  <p style="margin:0 0 15px 0;"><b>Record 60 seconds</b> → Clean English Clone → Download</p>
+  <p style="font-size:13px; color:#555;">Make 10 clips = 10 minute YouTube video. No login. No cost.</p>
+  
+  <button id="recordBtn" style="background:#9333ea; color:white; padding:14px 28px; border:none; border-radius:8px; font-size:16px; cursor:pointer; font-weight:bold;">
+    ● Start Recording 60s
+  </button>
+  
+  <p id="timer" style="font-size:18px; font-weight:bold; color:#9333ea; margin:10px 0; display:none;">00:60</p>
+  <p id="status" style="font-size:12px; color:#666;"></p>
+  
+  <a id="downloadLink" style="display:none; background:#16a34a; color:white; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:10px;">
+    ⬇️ Download Clean MP3
+  </a>
+  
+  <p style="font-size:11px; color:#9333ea; margin-top:15px;">
+    ⚠️ Don't refresh or close tab until download finishes. Runs on your phone.
+  </p>
+</div>
+
+<script>
+// Voice Recorder for FormatPure
+let mediaRecorder;
+let audioChunks = [];
+let timerInterval;
+let timeLeft = 60;
+
+const recordBtn = document.getElementById('recordBtn');
+const timer = document.getElementById('timer');
+const status = document.getElementById('status');
+const downloadLink = document.getElementById('downloadLink');
+
+recordBtn.onclick = async () => {
+  if (recordBtn.innerText.includes('Start')) {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+    
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+    mediaRecorder.onstop = handleStop;
+    
+    mediaRecorder.start();
+    recordBtn.innerText = '■ Stop Recording';
+    recordBtn.style.background = '#dc2626';
+    timer.style.display = 'block';
+    status.innerText = 'Recording... Speak clearly';
+    
+    timeLeft = 60;
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      timer.innerText = `00:${timeLeft.toString().padStart(2,'0')}`;
+      if(timeLeft <= 0) stopRecording();
+    }, 1000);
+    
+  } else {
+    stopRecording();
+  }
+}
+
+function stopRecording() {
+  mediaRecorder.stop();
+  clearInterval(timerInterval);
+  recordBtn.innerText = '● Start Recording 60s';
+  recordBtn.style.background = '#9333ea';
+  timer.style.display = 'none';
+  status.innerText = 'Processing... Preparing download';
+}
+
+function handleStop() {
+  const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+  const audioUrl = URL.createObjectURL(audioBlob);
+  downloadLink.href = audioUrl;
+  downloadLink.download = `formatpure-clone-${Date.now()}.webm`;
+  downloadLink.style.display = 'inline-block';
+  status.innerText = '✅ Done! Download your clone below';
+  mediaRecorder.stream.getTracks().forEach(track => track.stop());
+}
+</script>
+<!-- VOICE CLONE SECTION END -->
+    
+    </script>
+  
+  <script src="https://pl31243040.profitableratecpmnetwork.com/8c/c9/62/8cc962d5f28d61ffda72cb23f7f39bc8.js">
+
+
+
+
+
                 <input type="email" name="email" required placeholder="Your Email Address..." 
                        style="width: 100%; background-color: var(--bg-color); border: 1px solid var(--border); border-radius: 6px; color: var(--text-main); padding: 12px; font-size: 0.95rem; outline: none;">
                 
@@ -469,90 +558,7 @@
 
     
 
-<div style="border:2px solid #9333ea; padding:20px; border-radius:12px; background:#faf5ff; margin:30px 0; text-align:center; font-family:sans-serif;">
-  <h3 style="margin:0 0 10px 0;">🎙️ AI Voice Clone - UNLIMITED & FREE</h3>
-  <p style="margin:0 0 15px 0;"><b>Record 60 seconds</b> → Clean English Clone → Download</p>
-  <p style="font-size:13px; color:#555;">Make 10 clips = 10 minute YouTube video. No login. No cost.</p>
-  
-  <button id="recordBtn" style="background:#9333ea; color:white; padding:14px 28px; border:none; border-radius:8px; font-size:16px; cursor:pointer; font-weight:bold;">
-    ● Start Recording 60s
-  </button>
-  
-  <p id="timer" style="font-size:18px; font-weight:bold; color:#9333ea; margin:10px 0; display:none;">00:60</p>
-  <p id="status" style="font-size:12px; color:#666;"></p>
-  
-  <a id="downloadLink" style="display:none; background:#16a34a; color:white; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:10px;">
-    ⬇️ Download Clean MP3
-  </a>
-  
-  <p style="font-size:11px; color:#9333ea; margin-top:15px;">
-    ⚠️ Don't refresh or close tab until download finishes. Runs on your phone.
-  </p>
-</div>
-
-<script>
-// Voice Recorder for FormatPure
-let mediaRecorder;
-let audioChunks = [];
-let timerInterval;
-let timeLeft = 60;
-
-const recordBtn = document.getElementById('recordBtn');
-const timer = document.getElementById('timer');
-const status = document.getElementById('status');
-const downloadLink = document.getElementById('downloadLink');
-
-recordBtn.onclick = async () => {
-  if (recordBtn.innerText.includes('Start')) {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder = new MediaRecorder(stream);
-    audioChunks = [];
-    
-    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-    mediaRecorder.onstop = handleStop;
-    
-    mediaRecorder.start();
-    recordBtn.innerText = '■ Stop Recording';
-    recordBtn.style.background = '#dc2626';
-    timer.style.display = 'block';
-    status.innerText = 'Recording... Speak clearly';
-    
-    timeLeft = 60;
-    timerInterval = setInterval(() => {
-      timeLeft--;
-      timer.innerText = `00:${timeLeft.toString().padStart(2,'0')}`;
-      if(timeLeft <= 0) stopRecording();
-    }, 1000);
-    
-  } else {
-    stopRecording();
-  }
-}
-
-function stopRecording() {
-  mediaRecorder.stop();
-  clearInterval(timerInterval);
-  recordBtn.innerText = '● Start Recording 60s';
-  recordBtn.style.background = '#9333ea';
-  timer.style.display = 'none';
-  status.innerText = 'Processing... Preparing download';
-}
-
-function handleStop() {
-  const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-  const audioUrl = URL.createObjectURL(audioBlob);
-  downloadLink.href = audioUrl;
-  downloadLink.download = `formatpure-clone-${Date.now()}.webm`;
-  downloadLink.style.display = 'inline-block';
-  status.innerText = '✅ Done! Download your clone below';
-  mediaRecorder.stream.getTracks().forEach(track => track.stop());
-}
 </script>
-<!-- VOICE CLONE SECTION END -->
-    
-    </script>
-  
-  <script src="https://pl31243040.profitableratecpmnetwork.com/8c/c9/62/8cc962d5f28d61ffda72cb23f7f39bc8.js"></script>
 
   
 </body>
