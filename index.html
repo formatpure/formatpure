@@ -170,6 +170,41 @@
         <p>Remove AI markdown symbols, fix weird spacing, and clean up messy copied text instantly.</p>
     </header>
 
+<!-- VOICE CLONE SECTION START -->
+<div style="border:3px solid #fbbf24; padding:25px; border-radius:15px; background:linear-gradient(135deg,#fffbeb,#fef3c7); margin:20px 0; text-align:center; box-shadow:0 0 25px #fbbf24;">
+  <h3 style="margin:0 0 10px 0; color:#92400e;">🎙️ FEATURED: AI Voice Clone - UNLIMITED & FREE</h3>
+  <p style="margin:0 0 15px 0; color:#92400e;"><b>Record 60 seconds</b> → Clean English Clone → Download</p>
+  <p style="margin:0 0 15px 0; font-size:14px;">Make 10 clips = 10 minute YouTube video. No login. No cost.</p>
+  <button id="vc-start" style="background:#f59e0b; color:#fff; padding:14px 24px; border:none; border-radius:10px; font-weight:bold; font-size:16px; cursor:pointer;">● Start Recording 60s</button>
+  <p id="vc-status" style="margin-top:15px; font-size:13px; color:#92400e;">⚠️ Don't refresh or close tab until download finishes. Runs on your phone.</p>
+  <audio id="vc-audio" controls style="display:none; margin-top:15px; width:100%;"></audio>
+  <a id="vc-download" style="display:none; margin-top:10px; background:#10b981; color:#fff; padding:12px 20px; border-radius:8px; text-decoration:none; font-weight:bold;" download="voice-clone-60s.wav">⬇️ Download Clone</a>
+</div>
+<script>
+let vcChunks=[], vcRec, vcTimer;
+document.getElementById('vc-start').onclick=async()=>{
+  vcChunks=[];
+  let s=await navigator.mediaDevices.getUserMedia({audio:true});
+  vcRec=new MediaRecorder(s);
+  vcRec.ondataavailable=e=>vcChunks.push(e.data);
+  vcRec.onstop=()=>{
+    let b=new Blob(vcChunks,{type:'audio/wav'});
+    let u=URL.createObjectURL(b);
+    document.getElementById('vc-audio').src=u;
+    document.getElementById('vc-audio').style.display='block';
+    document.getElementById('vc-download').href=u;
+    document.getElementById('vc-download').style.display='inline-block';
+    document.getElementById('vc-status').innerHTML='✅ Done! Download your 60s clip above.';
+  };
+  vcRec.start();
+  document.getElementById('vc-status').innerHTML='🔴 Recording... 60 seconds';
+  setTimeout(()=>{vcRec.stop();s.getTracks().forEach(t=>t.stop());},60000);
+};
+</script>
+<!-- VOICE CLONE SECTION END -->
+
+<!-- TOP AD PLACEHOLDER -->
+
     <!-- TOP AD PLACEHOLDER -->
     <div class="ad-space">
         <!-- Paste your Adsterra Banner Code Here Later -->
@@ -333,65 +368,6 @@
   </p>
 </div>
 
-<script>
-// Voice Recorder for FormatPure
-let mediaRecorder;
-let audioChunks = [];
-let timerInterval;
-let timeLeft = 60;
-
-const recordBtn = document.getElementById('recordBtn');
-const timer = document.getElementById('timer');
-const status = document.getElementById('status');
-const downloadLink = document.getElementById('downloadLink');
-
-recordBtn.onclick = async () => {
-  if (recordBtn.innerText.includes('Start')) {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder = new MediaRecorder(stream);
-    audioChunks = [];
-    
-    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-    mediaRecorder.onstop = handleStop;
-    
-    mediaRecorder.start();
-    recordBtn.innerText = '■ Stop Recording';
-    recordBtn.style.background = '#dc2626';
-    timer.style.display = 'block';
-    status.innerText = 'Recording... Speak clearly';
-    
-    timeLeft = 60;
-    timerInterval = setInterval(() => {
-      timeLeft--;
-      timer.innerText = `00:${timeLeft.toString().padStart(2,'0')}`;
-      if(timeLeft <= 0) stopRecording();
-    }, 1000);
-    
-  } else {
-    stopRecording();
-  }
-}
-
-function stopRecording() {
-  mediaRecorder.stop();
-  clearInterval(timerInterval);
-  recordBtn.innerText = '● Start Recording 60s';
-  recordBtn.style.background = '#9333ea';
-  timer.style.display = 'none';
-  status.innerText = 'Processing... Preparing download';
-}
-
-function handleStop() {
-  const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-  const audioUrl = URL.createObjectURL(audioBlob);
-  downloadLink.href = audioUrl;
-  downloadLink.download = `formatpure-clone-${Date.now()}.webm`;
-  downloadLink.style.display = 'inline-block';
-  status.innerText = '✅ Done! Download your clone below';
-  mediaRecorder.stream.getTracks().forEach(track => track.stop());
-}
-</script>
-<!-- VOICE CLONE SECTION END -->  
 
 
 
