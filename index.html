@@ -160,7 +160,53 @@
             font-size: 0.8rem;
             color: var(--text-muted);
             max-width: 600px;
-        }
+       
+  }
+   tool-box {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+  color: white;
+}
+.tool-box textarea,.tool-box select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: none;
+  background: #333;
+  color: white;
+  font-size: 16px;
+}
+.tool-box button {
+  background: #00ff88;
+  color: black;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+}
+#downloadLink {
+  display: block;
+  background: #ff00ff;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 10px;
+  text-decoration: none;
+  font-weight: bold;
+}
+    
+    
+    
+    
+    
+    
+    
     </style>
 </head>
 <body>
@@ -169,30 +215,32 @@
         <h1>FormatPure</h1>
         <p>Remove AI markdown symbols, fix weird spacing, and clean up messy copied text instantly.</p>
     </header>
-<!-- ========== NEW: AI VOICEOVER TOOL ========== -->
-<div class="box" style="border: 2px solid #00ff88;">
-  <h3 style="color: #00ff88; text-align:center;">🎙️ Box 1: AI YouTube Voiceover Generator</h3>
-  <textarea id="script" placeholder="Paste your YouTube script here to generate AI Voiceover + SRT..."></textarea>
+
+<div class="tool-box">
+  <h2>🎬 AI Quote Video Maker - FREE</h2>
+  <p>Type 1 line → Get Viral Reel in 5 seconds</p>
+  
+  <label>Box 1: Write Your Quote</label>
+  <textarea id="quoteText" rows="3" placeholder="Success is not final, failure is not fatal"></textarea>
+  
+  <label>Box 2: Choose Style</label>
+  <select id="videoStyle">
+    <option value="dark">Dark Motivational</option>
+    <option value="aesthetic">Aesthetic Gradient</option>
+    <option value="neon">Neon Cyber</option>
+  </select>
+  
+  <button onclick="generateVideo()">Generate Viral Reel</button>
+  
+  <video id="previewVideo" controls style="width:100%; margin-top:15px; display:none;"></video>
+  <a id="downloadLink" style="display:none;">Download MP4</a>
+  
+  <canvas id="videoCanvas" width="1080" height="1920" style="display:none;"></canvas>
 </div>
 
-<div class="box" style="border: 2px solid #00ff88;">
-  <h3 style="color: #00ff88; text-align:center;">Box 2: Choose AI Voice</h3>
-  <select id="voiceSelect"><option>Loading voices...</option></select>
-  <button onclick="testVoice()">🔊 Test Selected Voice</button>
-</div>
+    
 
-<div class="box" style="border: 2px solid #00ff88;">
-  <h3 style="color: #00ff88; text-align:center;">Box 3: Generate & Download</h3>
-  <button onclick="generateVoiceover()">🚀 Generate Voiceover + Subtitles</button>
-  <button class="btn-download" onclick="downloadAudio()">🎵 Download MP3 Audio</button>
-  <button class="btn-download" onclick="downloadSRT()">📄 Download SRT Subtitles</button>
-  <p id="status" style="text-align:center; color:#00ff88; font-weight:bold;">Ready to generate</p>
-</div>
-
-<hr style="margin: 30px 0; border: 1px dashed #334155;">
-<h2 style="text-align:center; color:#00ff88;">↓ OR USE TEXT CLEANER TOOLS BELOW ↓</h2>
-<!-- ========== END NEW TOOL ========== -->
-
+    
 
 <!-- TOP AD PLACEHOLDER -->
 
@@ -506,91 +554,12 @@
             document.getElementById('m1').innerText = (total * 0.25).toFixed(2);
             document.getElementById('m2').innerText = (total * 0.50).toFixed(2);
             document.getElementById('m3').innerText = (total * 0.25).toFixed(2);
+        
+    
         }
-    
-    
-let voices = [];
-let audioBlob = null;
-let scriptText = "";
-let sentences = [];
 
-function loadVoices() {
-  voices = speechSynthesis.getVoices();
-  const select = document.getElementById('voiceSelect');
-  if(!select) return;
-  select.innerHTML = '';
-  voices.forEach((voice, i) => {
-    if(voice.lang.includes('en') || voice.lang.includes('ur') || voice.lang.includes('hi')) {
-      let option = document.createElement('option');
-      option.value = i;
-      option.textContent = `${voice.name} - ${voice.lang}`;
-      select.appendChild(option);
-    }
-  });
-}
-loadVoices();
-speechSynthesis.onvoiceschanged = loadVoices;
+  
 
-function testVoice() {
-  if(!document.getElementById('voiceSelect').value) return;
-  const utter = new SpeechSynthesisUtterance("Hello, this is your AI voiceover test from FormatPure");
-  utter.voice = voices[document.getElementById('voiceSelect').value];
-  speechSynthesis.speak(utter);
-}
-
-function generateVoiceover() {
-  scriptText = document.getElementById('script').value.trim();
-  if(!scriptText) { alert("Please paste your script first"); return; }
-  document.getElementById('status').innerText = "⏳ Generating... Do not close page";
-  speechSynthesis.cancel();
-  sentences = scriptText.match(/[^.!?]+[.!?]+/g) || [scriptText];
-  const utter = new SpeechSynthesisUtterance(scriptText);
-  utter.voice = voices[document.getElementById('voiceSelect').value];
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  const dest = audioContext.createMediaStreamDestination();
-  const recorder = new MediaRecorder(dest.stream);
-  let chunks = [];
-  recorder.ondataavailable = e => chunks.push(e.data);
-  recorder.onstop = () => {
-    audioBlob = new Blob(chunks, {type: 'audio/mp3'});
-    document.getElementById('status').innerText = "✅ Done! Download MP3 + SRT below";
-  };
-  recorder.start();
-  speechSynthesis.speak(utter);
-  utter.onend = () => { setTimeout(() => recorder.stop(), 500); };
-}
-
-function downloadSRT() {
-  if(!sentences.length) { alert("Generate voiceover first"); return; }
-  let srt = ""; let time = 0;
-  sentences.forEach((s, i) => {
-    let duration = s.split(' ').length * 0.4;
-    let start = formatTime(time);
-    let end = formatTime(time + duration);
-    srt += `${i+1}\n${start} --> ${end}\n${s.trim()}\n\n`;
-    time += duration;
-  });
-  downloadFile(srt, 'FormatPure_Subtitles.srt', 'text/plain');
-}
-
-function downloadAudio() {
-  if(!audioBlob) { alert("Generate voiceover first"); return; }
-  const url = URL.createObjectURL(audioBlob);
-  downloadFile(url, 'FormatPure_Voiceover.mp3', 'audio/mp3');
-}
-
-function formatTime(sec) {
-  let h = Math.floor(sec/3600);
-  let m = Math.floor((sec%3600)/60);
-  let s = (sec%60).toFixed(3);
-  return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.padStart(6,'0')}`.replace('.',',');
-}
-function downloadFile(data, filename, type) {
-  const a = document.createElement('a');
-  if(type === 'audio/mp3') a.href = data; else a.href = URL.createObjectURL(new Blob([data], {type}));
-  a.download = filename;
-  a.click();
-}
 // ========== YOUR OLD TOOL FUNCTIONS ==========
 function convertMM() {
   let mm = document.getElementById('mmInput').value;
@@ -606,6 +575,102 @@ function splitBudget() {
   }
 }
 // ========== END OLD FUNCTIONS ==========
+    async function generateVideo() {
+  const quote = document.getElementById('quoteText').value;
+  const style = document.getElementById('videoStyle').value;
+  const canvas = document.getElementById('videoCanvas');
+  const ctx = canvas.getContext('2d');
+  
+  if(quote === ""){ alert("Pehle quote likho bro"); return; }
+  
+  alert("Video ban rahi hai... 5 sec");
+  
+  const stream = canvas.captureStream(30);
+  const recorder = new MediaRecorder(stream, {mimeType: 'video/webm'});
+  const chunks = [];
+  recorder.ondataavailable = e => chunks.push(e.data);
+  
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, {type: 'video/webm'});
+    const url = URL.createObjectURL(blob);
+    const video = document.getElementById('previewVideo');
+    const download = document.getElementById('downloadLink');
+    video.src = url;
+    video.style.display = 'block';
+    download.href = url;
+    download.download = 'FormatPure_ViralReel.webm';
+    download.style.display = 'block';
+    download.innerText = 'Download MP4 - Free';
+  };
+  
+  recorder.start();
+  
+  // 3 second ki video banayenge
+  for(let i = 0; i < 90; i++){ // 90 frames = 3 sec * 30fps
+    drawFrame(ctx, quote, style, i/90);
+    await new Promise(r => setTimeout(r, 33)); // 30fps
+  }
+  
+  recorder.stop();
+}
+
+function drawFrame(ctx, text, style, progress) {
+  // Background
+  if(style === 'dark'){
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, 1080, 1920);
+    ctx.fillStyle = '#00ff88';
+  }
+  if(style === 'aesthetic'){
+    let gradient = ctx.createLinearGradient(0,0,1080,1920);
+    gradient.addColorStop(0, '#ff00ff');
+    gradient.addColorStop(1, '#00ffff');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 1080, 1920);
+    ctx.fillStyle = 'white';
+  }
+  if(style === 'neon'){
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(0, 0, 1080, 1920);
+    ctx.shadowColor = '#00ffff';
+    ctx.shadowBlur = 20;
+    ctx.fillStyle = '#00ffff';
+  }
+  
+  // Text - Bada aur center me
+  ctx.font = 'bold 90px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  
+  // Text ko wrap karna
+  let words = text.split(' ');
+  let line = '';
+  let y = 960;
+  for(let n = 0; n < words.length; n++) {
+    let testLine = line + words[n] + ' ';
+    let metrics = ctx.measureText(testLine);
+    if(metrics.width > 900 && n > 0) {
+      ctx.fillText(line, 540, y);
+      line = words[n] + ' ';
+      y += 110;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, 540, y);
+  
+  // Bouncing effect
+  let scale = 1 + 0.05 * Math.sin(progress * Math.PI * 6);
+  ctx.scale(scale, scale);
+  
+  // Watermark
+  ctx.font = '30px Arial';
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.fillText('Made with FormatPure.com', 540, 1850);
+}
+  
+    
+    
     
     </script>
     
