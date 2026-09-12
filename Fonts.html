@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beautiful Font Generator</title>
+    <!-- Google Fonts for diverse styling options -->
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4a5568;
+            font-size: 2.5rem;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #4a5568;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .font-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .font-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .font-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #cbd5e1;
+            padding-bottom: 8px;
+        }
+
+        .font-name {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            font-weight: bold;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #5a67d8;
+        }
+
+        .copy-btn.copied {
+            background: #48bb78;
+        }
+
+        .font-preview {
+            font-size: 1.4rem;
+            line-height: 1.5;
+            padding: 10px 0;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>✨ Beautiful Font Generator ✨</h1>
+    
+    <div class="input-section">
+        <label for="textInput">Type your text or paragraph below:</label>
+        <textarea id="textInput" placeholder="Type or paste your text here to see it in beautiful fonts..."></textarea>
+    </div>
+
+    <div class="results-grid" id="resultsGrid">
+        <!-- Font preview cards will be generated here by JavaScript -->
+    </div>
+</div>
+
+<script>
+    // List of Google Fonts loaded in the header
+    const fontStyles = [
+        { name: 'Dancing Script', family: "'Dancing Script', cursive" },
+        { name: 'Pacifico', family: "'Pacifico', cursive" },
+        { name: 'Playfair Display', family: "'Playfair Display', serif" },
+        { name: 'Cinzel Decorative', family: "'Cinzel', serif" },
+        { name: 'Alex Brush', family: "'Alex Brush', cursive" },
+        { name: 'Sacramento', family: "'Sacramento', cursive" },
+        { name: 'Special Elite (Typewriter)', family: "'Special Elite', monospace" },
+        { name: 'Monoton (Retro)', family: "'Monoton', cursive" },
+        { name: 'Fredericka the Great', family: "'Fredericka the Great', serif" }
+    ];
+
+    const textInput = document.getElementById('textInput');
+    const resultsGrid = document.getElementById('resultsGrid');
+
+    // Function to render the font cards
+    function updateFontPreviews() {
+        const userText = textInput.value || "The quick brown fox jumps over the lazy dog.";
+        resultsGrid.innerHTML = ''; // Clear previous results
+
+        fontStyles.forEach((font, index) => {
+            // Create Card Container
+            const card = document.createElement('div');
+            card.className = 'font-card';
+
+            // Top section with Name and Copy Button
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'font-info';
+            
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'font-name';
+            nameSpan.textContent = font.name;
+
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = 'Copy';
+            copyBtn.onclick = () => copyTextToClipboard(userText, copyBtn);
+
+            infoDiv.appendChild(nameSpan);
+            infoDiv.appendChild(copyBtn);
+
+            // Preview text section
+            const previewDiv = document.createElement('div');
+            previewDiv.className = 'font-preview';
+            previewDiv.style.fontFamily = font.family;
+            previewDiv.textContent = userText;
+
+            // Assemble Card
+            card.appendChild(infoDiv);
+            card.appendChild(previewDiv);
+            resultsGrid.appendChild(card);
+        });
+    }
+
+    // Function to copy text to user's clipboard
+    function copyTextToClipboard(text, button) {
+        navigator.clipboard.writeText(text).then(() => {
+            button.textContent = 'Copied! ✓';
+            button.classList.add('copied');
+            
+            // Reset button state after 2 seconds
+            setTimeout(() => {
+                button.textContent = 'Copy';
+                button.classList.remove('copied');
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    }
+
+    // Event listener to update text instantly as the user types
+    textInput.addEventListener('input', updateFontPreviews);
+
+    // Initial run to show default text on load
+    updateFontPreviews();
+</script>
+
+</body>
+</html>
