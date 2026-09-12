@@ -615,15 +615,8 @@ function splitBudget() {
 
   
   
-  // Bouncing effect
-  let scale = 1 + 0.05 * Math.sin(progress * Math.PI * 6);
-  ctx.scale(scale, scale);
   
-  // Watermark
-  ctx.font = '30px Arial';
-  ctx.fillStyle = 'rgba(255,255,255,0.5)';
-  ctx.fillText('Made with FormatPure.com', 540, 1850);
-}
+
   const canvas = document.getElementById('effectCanvas');
 const ctx = canvas.getContext('2d');
 let userImg = new Image();
