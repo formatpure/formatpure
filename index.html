@@ -268,27 +268,6 @@
         <p>Remove AI markdown symbols, fix weird spacing, and clean up messy copied text instantly.</p>
     </header>
 
-<div class="tool-box">
-  <h2>🎬 AI Quote Video Maker - FREE</h2>
-  <p>Type 1 line → Get Viral Reel in 5 seconds</p>
-  
-  <label>Box 1: Write Your Quote</label>
-  <textarea id="quoteText" rows="3" placeholder="Success is not final, failure is not fatal"></textarea>
-  
-  <label>Box 2: Choose Style</label>
-  <select id="videoStyle">
-    <option value="dark">Dark Motivational</option>
-    <option value="aesthetic">Aesthetic Gradient</option>
-    <option value="neon">Neon Cyber</option>
-  </select>
-  
-  <button onclick="generateVideo()">Generate Viral Reel</button>
-  
-  <video id="previewVideo" controls style="width:100%; margin-top:15px; display:none;"></video>
-  <a id="downloadLink" style="display:none;">Download MP4</a>
-  
-  <canvas id="videoCanvas" width="1080" height="1920" style="display:none;"></canvas>
-</div>
 
     
 
@@ -635,22 +614,6 @@ function splitBudget() {
 // ========== END OLD FUNCTIONS ==========
 
   
-  // Text ko wrap karna
-  let words = text.split(' ');
-  let line = '';
-  let y = 960;
-  for(let n = 0; n < words.length; n++) {
-    let testLine = line + words[n] + ' ';
-    let metrics = ctx.measureText(testLine);
-    if(metrics.width > 900 && n > 0) {
-      ctx.fillText(line, 540, y);
-      line = words[n] + ' ';
-      y += 110;
-    } else {
-      line = testLine;
-    }
-  }
-  ctx.fillText(line, 540, y);
   
   // Bouncing effect
   let scale = 1 + 0.05 * Math.sin(progress * Math.PI * 6);
