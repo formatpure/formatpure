@@ -683,7 +683,7 @@ function drawFrame(time) {
 }
 
 async function startAnimation() {
-  alert("HD 10s Video ban rahi hai... wait karo");
+  alert("Your vedio is in process...Wait 40sec");
   const stream = canvas.captureStream(30);
   const recorder = new MediaRecorder(stream, {mimeType: 'video/webm;codecs=vp9'}); // HD codec
   const chunks = [];
