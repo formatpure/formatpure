@@ -200,8 +200,60 @@
   text-decoration: none;
   font-weight: bold;
 }
-    
-    
+
+  .tool-box {
+  background: #111;
+  padding: 20px;
+  border-radius: 16px;
+  margin-top: 20px;
+  color: white;
+  text-align: center;
+}
+#effectCanvas {
+  width: 100%; 
+  margin-top: 15px; 
+  border-radius: 12px;
+  border: 2px solid #FFD700;
+}
+
+.fancy-btn {
+  background: linear-gradient(90deg, #FFD700, #FF69B4, #00FFFF);
+  background-size: 200% 200%;
+  animation: gradientMove 3s ease infinite;
+  color: black;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  box-shadow: 0 0 20px rgba(255,215,0,0.5);
+}
+@keyframes gradientMove {
+ 0%{background-position:0% 50%}
+ 50%{background-position:100% 50%}
+ 100%{background-position:0% 50%}
+}
+
+.fancy-download {
+  display: block;
+  background: #000;
+  color: #FFD700;
+  border: 2px solid #FFD700;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-weight: bold;
+  text-decoration: none;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+.fancy-download:hover {
+  background: #FFD700;
+  color: #000;
+  box-shadow: 0 0 20px #FFD700;
+}  
     
     
     
@@ -279,6 +331,22 @@
         </div>
         <button onclick="findAndReplace()" style="width: 50%; background-color: #3b82f6; margin-bottom: 15px;">🔄 Swap Words Instantly</button>
 
+<! --Image and vedio converter fancy-->
+<div class="tool-box">
+  <h2>✨ HD Heartbeat Star Effect</h2>
+  <p>Upload Image → 10 Second HD Video</p>
+  
+  <input type="file" id="uploadImg" accept="image/*">
+  
+  <canvas id="effectCanvas" width="1080" height="1920"></canvas>
+  
+  <button onclick="startAnimation()" id="genBtn" style="display:none;" class="fancy-btn">Generate 10s HD Video</button>
+  
+  <video id="previewVideo" controls style="width:100%; margin-top:15px; display:none;"></video>
+  <a id="downloadLink" class="fancy-download" style="display:none;">⬇️ Download HD Video</a>
+</div>
+
+        
       
       <!-- PASSWORD GENERATOR CONTAINER -->
     <div class="main-container" style="margin-top: 20px;">
@@ -669,7 +737,97 @@ function drawFrame(ctx, text, style, progress) {
   ctx.fillStyle = 'rgba(255,255,255,0.5)';
   ctx.fillText('Made with FormatPure.com', 540, 1850);
 }
+  const canvas = document.getElementById('effectCanvas');
+const ctx = canvas.getContext('2d');
+let userImg = new Image();
+let stars = [];
+
+document.getElementById('uploadImg').onchange = function(e) {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    userImg.onload = function() {
+      stars = [];
+      for(let i=0; i<80; i++){ // zyada stars for HD look
+        stars.push({
+          x: Math.random()*1080,
+          y: Math.random()*1920,
+          size: Math.random()*5 + 2,
+          speed: Math.random()*3 + 1
+        });
+      }
+      drawFrame(0);
+      document.getElementById('genBtn').style.display = 'block';
+    }
+    userImg.src = event.target.result;
+  }
+  reader.readAsDataURL(file);
+}
+
+function drawFrame(time) {
+  // Background
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, 1080, 1920);
   
+  // 1. HEARTBEAT: go back and go ahead
+  let scale = 1 + 0.1 * Math.sin(time * 0.004); // thora tez heartbeat
+  let imgW = 1080 * scale;
+  let imgH = 1920 * scale;
+  let imgX = (1080 - imgW) / 2;
+  let imgY = (1920 - imgH) / 2;
+  
+  ctx.drawImage(userImg, imgX, imgY, imgW, imgH);
+  
+  // 2. STARS: First 5 sec WHITE, Next 5 sec BLACK on WHITE bg
+  let isWhitePhase = time < 5000; // 5000ms = 5 sec
+  
+  if(!isWhitePhase){ // black phase me bg white kar do
+    ctx.fillStyle = '#FFF';
+    ctx.fillRect(0, 0, 1080, 1920);
+    ctx.drawImage(userImg, imgX, imgY, imgW, imgH); // image dubara draw
+  }
+  
+  ctx.fillStyle = isWhitePhase? '#FFFFFF' : '#000'; // color switch
+  
+  stars.forEach(star => {
+    star.y -= star.speed;
+    if(star.y < 0) star.y = 1920;
+    star.x += Math.sin(time * 0.003 + star.speed) * 0.8;
+    
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+async function startAnimation() {
+  alert("HD 10s Video ban rahi hai... wait karo");
+  const stream = canvas.captureStream(30);
+  const recorder = new MediaRecorder(stream, {mimeType: 'video/webm;codecs=vp9'}); // HD codec
+  const chunks = [];
+  recorder.ondataavailable = e => chunks.push(e.data);
+  
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, {type: 'video/webm'});
+    const url = URL.createObjectURL(blob);
+    const video = document.getElementById('previewVideo');
+    const download = document.getElementById('downloadLink');
+    video.src = url;
+    video.style.display = 'block';
+    download.href = url;
+    download.download = 'FormatPure_HD_Heartbeat.webm';
+    download.style.display = 'block';
+  };
+  
+  recorder.start();
+  
+  for(let i = 0; i < 300; i++){ // 300 frames = 10 sec @ 30fps
+    drawFrame(i*33);
+    await new Promise(r => setTimeout(r, 33));
+  }
+  
+  recorder.stop();
+}
     
     
     
