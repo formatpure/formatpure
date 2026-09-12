@@ -633,72 +633,7 @@ function splitBudget() {
   }
 }
 // ========== END OLD FUNCTIONS ==========
-    async function generateVideo() {
-  const quote = document.getElementById('quoteText').value;
-  const style = document.getElementById('videoStyle').value;
-  const canvas = document.getElementById('videoCanvas');
-  const ctx = canvas.getContext('2d');
-  
-  if(quote === ""){ alert("Pehle quote likho bro"); return; }
-  
-  alert("Video ban rahi hai... 5 sec");
-  
-  const stream = canvas.captureStream(30);
-  const recorder = new MediaRecorder(stream, {mimeType: 'video/webm'});
-  const chunks = [];
-  recorder.ondataavailable = e => chunks.push(e.data);
-  
-  recorder.onstop = () => {
-    const blob = new Blob(chunks, {type: 'video/webm'});
-    const url = URL.createObjectURL(blob);
-    const video = document.getElementById('previewVideo');
-    const download = document.getElementById('downloadLink');
-    video.src = url;
-    video.style.display = 'block';
-    download.href = url;
-    download.download = 'FormatPure_ViralReel.webm';
-    download.style.display = 'block';
-    download.innerText = 'Download MP4 - Free';
-  };
-  
-  recorder.start();
-  
-  // 3 second ki video banayenge
-  for(let i = 0; i < 90; i++){ // 90 frames = 3 sec * 30fps
-    drawFrame(ctx, quote, style, i/90);
-    await new Promise(r => setTimeout(r, 33)); // 30fps
-  }
-  
-  recorder.stop();
-}
 
-function drawFrame(ctx, text, style, progress) {
-  // Background
-  if(style === 'dark'){
-    ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, 1080, 1920);
-    ctx.fillStyle = '#00ff88';
-  }
-  if(style === 'aesthetic'){
-    let gradient = ctx.createLinearGradient(0,0,1080,1920);
-    gradient.addColorStop(0, '#ff00ff');
-    gradient.addColorStop(1, '#00ffff');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 1080, 1920);
-    ctx.fillStyle = 'white';
-  }
-  if(style === 'neon'){
-    ctx.fillStyle = '#0a0a0a';
-    ctx.fillRect(0, 0, 1080, 1920);
-    ctx.shadowColor = '#00ffff';
-    ctx.shadowBlur = 20;
-    ctx.fillStyle = '#00ffff';
-  }
-  
-  // Text - Bada aur center me
-  ctx.font = 'bold 90px Arial';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
   
   // Text ko wrap karna
   let words = text.split(' ');
